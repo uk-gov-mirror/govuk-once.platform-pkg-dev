@@ -1,7 +1,7 @@
 #!/bin/sh
 # Bootstrap a Connect package.
 #
-#   bash -c "$(curl -fsSL https://raw.githubusercontent.com/govuk-once/platform-pkg-dev/main/start.sh)" -- --dir connect-foo --name connect-foo --team identity --assumeRole connect-development-admin
+#   bash -c "$(curl -fsSL https://raw.githubusercontent.com/govuk-once/platform-pkg-dev/main/start.sh)" -- --dir connect-foo --name connect-foo --team identity --assumerole connect-development-admin
 #
 # --dir names a folder to create and work in. Without it, an empty directory is
 # used as-is and a non-empty one prompts, so piping this into the wrong place
@@ -36,7 +36,7 @@ if [ "${1:-}" = "--local" ]; then
   shift
 fi
 
-# Pull --dir and --assumeRole out of the arguments; everything else is
+# Pull --dir and --assumerole out of the arguments; everything else is
 # forwarded to `dev init`.
 # The marker keeps quoting intact while rebuilding "$@" in POSIX sh.
 DIR=""
@@ -46,8 +46,8 @@ while [ "$1" != "--end-of-args--" ]; do
   case "$1" in
     --dir) shift; [ "$1" != "--end-of-args--" ] || fail "--dir needs a folder name."; DIR="$1" ;;
     --dir=*) DIR="${1#--dir=}" ;;
-    --assumeRole) shift; [ "$1" != "--end-of-args--" ] || fail "--assumeRole needs a role name."; ASSUME_ROLE="$1" ;;
-    --assumeRole=*) ASSUME_ROLE="${1#--assumeRole=}" ;;
+    --assumerole) shift; [ "$1" != "--end-of-args--" ] || fail "--assumerole needs a role name."; ASSUME_ROLE="$1" ;;
+    --assumerole=*) ASSUME_ROLE="${1#--assumerole=}" ;;
     *) set -- "$@" "$1" ;;
   esac
   shift
@@ -99,7 +99,7 @@ if [ "$have" != "$want" ]; then
   corepack prepare ${PNPM} --activate"
 fi
 
-# When --assumeRole is given, assume the GDS role and authorise CodeArtifact
+# When --assumerole is given, assume the GDS role and authorise CodeArtifact
 # before writing any files.  platform-pkg-dev itself lives on CodeArtifact, so
 # nothing can proceed without a valid token.  The CLI is not installed yet, so
 # this calls gds-cli and the AWS CLI directly — the same commands the CLI wraps.
@@ -168,7 +168,7 @@ pnpm install || fail "pnpm install failed.
 # fetches a different platform-pkg-dev than the one that just ran.
 echo "platform-pkg-dev: running dev init"
 INIT_ARGS="--pkg-dev $PKG_DEV"
-[ -n "$ASSUME_ROLE" ] && INIT_ARGS="$INIT_ARGS --assumeRole $ASSUME_ROLE"
+[ -n "$ASSUME_ROLE" ] && INIT_ARGS="$INIT_ARGS --assumerole $ASSUME_ROLE"
 pnpm dev init $INIT_ARGS "$@"
 
 # init rewrites package.json with the package's real dependency set - oxlint,

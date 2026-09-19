@@ -172,8 +172,8 @@ async function collectAnswers(
   const assumeRole =
     flags.assumeRole ??
     (acceptDefaults
-      ? fail('--assumeRole is required when using --yes.')
-      : await ask('AWS role to assume', { flag: '--assumeRole' }));
+      ? fail('--assumerole is required when using --yes.')
+      : await ask('AWS role to assume', { flag: '--assumerole' }));
 
   const packageName =
     flags.name ??

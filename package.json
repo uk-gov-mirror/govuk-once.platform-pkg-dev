@@ -45,7 +45,8 @@
     "pre-commit": "pnpm build && DEV_BIN=./dist/cli.js ./hooks/dev-hook pre-commit",
     "pre-push": "pre-commit run --hook-stage pre-push --all-files",
     "prepare": "pnpm run build && ./hooks/setup-git-config && node dist/cli.js hooks install 2>/dev/null || true",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "pnpm run build",
+    "pretest": "pnpm build"
   },
   "dependencies": {
     "aws-cdk-lib": "2.265.0",

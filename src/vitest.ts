@@ -1,33 +1,4 @@
-import { execSync } from 'node:child_process';
 import { defineConfig, mergeConfig, type ViteUserConfig } from 'vitest/config';
-
-/**
- * Custom Vite plugin to force a rebuild before tests run.
- * Uses synchronous execution to ensure the build finishes before Vitest proceeds.
- */
-function runBuildBeforeTests() {
-  const runBuild = () => {
-    console.log('\n[vitest] Running pnpm build...');
-    try {
-      execSync('pnpm build', { stdio: 'inherit' });
-    } catch {
-      console.error(`\n[vitest] pnpm build failed`);
-      // We catch the error so a broken build doesn't crash the Vitest watcher
-    }
-  };
-
-  return {
-    name: 'run-build-before-tests',
-    // 1. Triggers on the initial test run
-    buildStart() {
-      runBuild();
-    },
-    // 2. Triggers on file saves during watch mode
-    handleHotUpdate() {
-      runBuild();
-    },
-  };
-}
 
 /**
  * The shared Vitest configuration for every Connect package.
@@ -37,7 +8,6 @@ function runBuildBeforeTests() {
  * file, and this is what those files extend.
  */
 const BASE: ViteUserConfig = defineConfig({
-  plugins: [runBuildBeforeTests()],
   test: {
     // Both layouts, because packages differ: platform-pkg-dev keeps tests beside the
     // source, while a published package usually keeps them in test/.
